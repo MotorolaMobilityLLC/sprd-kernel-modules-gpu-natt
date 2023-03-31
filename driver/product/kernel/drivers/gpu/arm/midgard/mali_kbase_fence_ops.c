@@ -68,12 +68,10 @@ kbase_fence_fence_value_str(struct dma_fence *fence, char *str, int size)
 #endif
 {
 #if (KERNEL_VERSION(5, 1, 0) > LINUX_VERSION_CODE)
-	const char *format = "%u";
+	snprintf(str, size, "%u", fence->seqno);
 #else
-	const char *format = "%llu";
+	snprintf(str, size, "%llu", fence->seqno);
 #endif
-	if (unlikely(!scnprintf(str, size, format, fence->seqno)))
-		pr_err("Fail to encode fence seqno to string");
 }
 
 #if MALI_USE_CSF
