@@ -3352,7 +3352,7 @@ static ssize_t gpuinfo_show(struct device *dev,
 
 		kbdev = list_entry(entry, struct kbase_device, entry);
 		/* output the total memory usage and cap for this device */
-		ret += scnprintf(buf+ ret, PAGE_SIZE, "%-16s  %10u\n",
+		ret += scnprintf(buf+ ret, PAGE_SIZE - ret, "%-16s  %10u\n",
 				kbdev->devname,
 				atomic_read(&(kbdev->memdev.used_pages)));
 		mutex_lock(&kbdev->kctx_list_lock);
@@ -3360,7 +3360,7 @@ static ssize_t gpuinfo_show(struct device *dev,
 			/* output the memory usage and cap for each kctx
 			* opened on this device
 			*/
-			ret += scnprintf(buf + ret, PAGE_SIZE, "  %s-0x%p %10u [pid:%d,tid:%d]\n",
+			ret += scnprintf(buf + ret, PAGE_SIZE - ret, "  %s-0x%p %10u [pid:%d,tid:%d]\n",
 				"kctx",
 				kctx,
 				atomic_read(&(kctx->used_pages)),
