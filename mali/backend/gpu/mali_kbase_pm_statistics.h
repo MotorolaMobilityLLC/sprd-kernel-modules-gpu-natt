@@ -114,7 +114,7 @@ struct kbasep_pm_statistics_state {
  * Return: 0 if the power statistics framework was successfully
  *         initialized, -errno otherwise.
  */
-int kbase_pm_statistics_init(struct kbase_device *kbdev);
+void kbase_pm_statistics_init(struct kbase_device *kbdev);
 
 #ifdef CONFIG_MALI_DEVFREQ
 void kbase_pm_statistics_FreqInit(struct kbase_device *kbdev);

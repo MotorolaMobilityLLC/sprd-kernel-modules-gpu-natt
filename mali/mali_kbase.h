@@ -124,6 +124,12 @@
 #endif
 
 /*
+ * Kbase power mode
+ */
+#define		POWER_ON 0
+#define		LIGHT_SLEEP 1
+#define		DEEP_SLEEP 2
+/*
  * Kernel-side Base (KBase) APIs
  */
 

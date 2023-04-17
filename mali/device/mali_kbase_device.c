@@ -493,7 +493,10 @@ int kbase_device_early_init(struct kbase_device *kbdev)
 	err = kbasep_platform_device_init(kbdev);
 	if (err)
 		goto ktrace_term;
-
+#if !MALI_USE_CSF
+	//init statistics
+	kbase_pm_statistics_init(kbdev);
+#endif
 	err = kbase_pm_runtime_init(kbdev);
 	if (err)
 		goto fail_runtime_pm;

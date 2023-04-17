@@ -30,7 +30,7 @@
 #include "mali_kbase_jm_rb.h"
 #include "mali_kbase_pm_statistics.h"
 
-int kbase_pm_statistics_init(struct kbase_device *kbdev)
+void kbase_pm_statistics_init(struct kbase_device *kbdev)
 {
 	//set sub system name
 	strcpy(kbdev->pm.backend.statistics.sleep_info.subsystem_name, "GPU");
@@ -48,7 +48,6 @@ int kbase_pm_statistics_init(struct kbase_device *kbdev)
 	//init lock
 	spin_lock_init(&kbdev->pm.backend.statistics.lock);
 
-	return 0;
 }
 
 static void kbase_pm_get_statistics_calc(struct kbase_device *kbdev, ktime_t now)
@@ -68,20 +67,17 @@ static void kbase_pm_get_statistics_calc(struct kbase_device *kbdev, ktime_t now
 	//printk(KERN_ERR, "%s power_mode=%d gpu_active=%d \n", __func__, kbdev->pm.backend.statistics.power_mode, kbdev->pm.backend.statistics.gpu_active);
 	switch (kbdev->pm.backend.statistics.power_mode)
 	{
-	case 0://power on
+	case POWER_ON:
 		//get current freq
 		current_freq = kbdev->current_nominal_freq;
 
-		if (kbdev->pm.backend.statistics.gpu_active) {
+		if (kbdev->pm.backend.statistics.gpu_active){
 			//add busy time
 			kbdev->pm.backend.statistics.values.time_busy = ktime_add(kbdev->pm.backend.statistics.values.time_busy, diff);
-
 #ifdef CONFIG_MALI_DEVFREQ
 			//record current freq statistics
-			for(i = 0; i < kbdev->freq_num; i++)
-			{
-				if (current_freq == kbdev->pm.backend.statistics.freq_values[i].freq)
-				{
+			for(i = 0; i < kbdev->freq_num; i++){
+				if (current_freq == kbdev->pm.backend.statistics.freq_values[i].freq){
 					kbdev->pm.backend.statistics.freq_values[i].time_busy = ktime_add(kbdev->pm.backend.statistics.freq_values[i].time_busy, diff);
 					kbdev->pm.backend.statistics.freq_values[i].time_total = ktime_add(kbdev->pm.backend.statistics.freq_values[i].time_total, diff);
 					break;
@@ -107,8 +103,8 @@ static void kbase_pm_get_statistics_calc(struct kbase_device *kbdev, ktime_t now
 		}
 		break;
 
-	case 1://light sleep
-	case 2://deep sleep
+	case LIGHT_SLEEP:
+	case DEEP_SLEEP:
 		//add sleep time
 		kbdev->pm.backend.statistics.values.time_sleep = ktime_add(kbdev->pm.backend.statistics.values.time_sleep, diff);
 		break;

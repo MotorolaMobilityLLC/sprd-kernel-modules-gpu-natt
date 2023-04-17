@@ -174,8 +174,6 @@ int kbase_hwaccess_pm_init(struct kbase_device *kbdev)
 	ret = kbasep_pm_metrics_init(kbdev);
 	if (ret)
 		return ret;
-	//init statistics
-	kbase_pm_statistics_init(kbdev);
 #else
 	mutex_init(&kbdev->pm.backend.policy_change_lock);
 	kbdev->pm.backend.policy_change_clamp_state_to_off = false;
