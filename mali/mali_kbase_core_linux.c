@@ -99,6 +99,7 @@
 #include <linux/mm.h>
 #include <linux/compat.h>	/* is_compat_task/in_compat_syscall */
 #include <linux/mman.h>
+#include <linux/mm/emem.h>
 #include <linux/version.h>
 #include <linux/version_compat_defs.h>
 #include <mali_kbase_hw.h>
@@ -5473,7 +5474,7 @@ static DEVICE_ATTR_RW(mcu_shader_pwroff_timeout);
 
 #endif /* MALI_USE_CSF */
 
-#ifdef CONFIG_E_SHOW_MEM
+#if (IS_ENABLED(CONFIG_UNISOC_MM_ENHANCE_MEMINFO)) || (IS_ENABLED(CONFIG_E_SHOW_MEM))
 static int kbase_device_memory_printk(void)
 {
 	struct list_head *entry;
@@ -5522,6 +5523,8 @@ static int mali_e_show_mem_handler(struct notifier_block *nb,
 static struct notifier_block mali_e_show_mem_notifier = {
 	.notifier_call = mali_e_show_mem_handler,
 };
+#else
+static struct notifier_block mali_e_show_mem_notifier;
 #endif
 
 static struct attribute *kbase_scheduling_attrs[] = {
@@ -5652,6 +5655,7 @@ static int kbase_platform_device_remove(struct platform_device *pdev)
 #ifdef CONFIG_E_SHOW_MEM
 	unregister_e_show_mem_notifier(&mali_e_show_mem_notifier);
 #endif
+	unregister_unisoc_show_mem_notifier(&mali_e_show_mem_notifier);
 
 	return 0;
 }
@@ -5728,6 +5732,7 @@ static int kbase_platform_device_probe(struct platform_device *pdev)
 #ifdef CONFIG_E_SHOW_MEM
 		register_e_show_mem_notifier(&mali_e_show_mem_notifier);
 #endif
+		register_unisoc_show_mem_notifier(&mali_e_show_mem_notifier);
 	}
 
 	return err;
