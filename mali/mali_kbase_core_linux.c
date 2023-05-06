@@ -426,13 +426,13 @@ static int kbase_api_handshake_dummy(struct kbase_file *kfile,
 	return -EPERM;
 }
 
-/*static int kbase_api_kinstr_prfcnt_enum_info(
+static int kbase_api_kinstr_prfcnt_enum_info(
 	struct kbase_file *kfile,
 	struct kbase_ioctl_kinstr_prfcnt_enum_info *prfcnt_enum_info)
 {
 	return kbase_kinstr_prfcnt_enum_info(kfile->kbdev->kinstr_prfcnt_ctx,
 					     prfcnt_enum_info);
-}*/
+}
 
 static int kbase_api_kinstr_prfcnt_setup(
 	struct kbase_file *kfile,
@@ -1749,13 +1749,13 @@ static long kbase_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 				kfile);
 		break;
 
-/*	case KBASE_IOCTL_KINSTR_PRFCNT_ENUM_INFO:
+	case KBASE_IOCTL_KINSTR_PRFCNT_ENUM_INFO:
 		KBASE_HANDLE_IOCTL_INOUT(
 			KBASE_IOCTL_KINSTR_PRFCNT_ENUM_INFO,
 			kbase_api_kinstr_prfcnt_enum_info,
 			struct kbase_ioctl_kinstr_prfcnt_enum_info, kfile);
 		break;
-*/
+
 	case KBASE_IOCTL_KINSTR_PRFCNT_SETUP:
 		KBASE_HANDLE_IOCTL_INOUT(KBASE_IOCTL_KINSTR_PRFCNT_SETUP,
 					 kbase_api_kinstr_prfcnt_setup,
