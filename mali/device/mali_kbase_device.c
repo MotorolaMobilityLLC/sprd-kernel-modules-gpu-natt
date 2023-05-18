@@ -357,7 +357,10 @@ void kbase_device_misc_term(struct kbase_device *kbdev)
 
 void kbase_device_free(struct kbase_device *kbdev)
 {
-	kfree(kbdev);
+	if(kbdev)
+	{
+		kfree(kbdev);
+	}
 }
 
 void kbase_device_id_init(struct kbase_device *kbdev)
