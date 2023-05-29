@@ -33,7 +33,8 @@
 void kbase_pm_statistics_init(struct kbase_device *kbdev)
 {
 	//set sub system name
-	strcpy(kbdev->pm.backend.statistics.sleep_info.subsystem_name, "GPU");
+	strscpy_pad(kbdev->pm.backend.statistics.sleep_info.subsystem_name, "GPU",
+		sizeof(kbdev->pm.backend.statistics.sleep_info.subsystem_name));
 
 	//init statistics
 	kbdev->pm.backend.statistics.power_mode = 0;
