@@ -360,6 +360,7 @@ void kbase_device_free(struct kbase_device *kbdev)
 	if(kbdev)
 	{
 		kfree(kbdev);
+		kbdev = NULL;
 	}
 }
 
