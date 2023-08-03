@@ -339,8 +339,6 @@ struct kbase_pm_callback_conf {
 	 */
 	void (*power_runtime_gpu_active_callback)(struct kbase_device *kbdev);
 
-	void (*power_off_second_part_callback)(struct kbase_device *kbdev);
-
 	void (*power_shader_polling_callback)(struct kbase_device *kbdev);
 };
 

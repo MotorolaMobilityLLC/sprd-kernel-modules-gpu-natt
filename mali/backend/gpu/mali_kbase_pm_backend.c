@@ -76,8 +76,6 @@ int kbase_pm_runtime_init(struct kbase_device *kbdev)
 					callbacks->power_runtime_gpu_idle_callback;
 		kbdev->pm.backend.callback_power_runtime_gpu_active =
 					callbacks->power_runtime_gpu_active_callback;
-		kbdev->pm.backend.callback_power_off_second_part =
-					callbacks->power_off_second_part_callback;
 		kbdev->pm.backend.callback_power_shader_polling =
 					callbacks->power_shader_polling_callback;
 
@@ -136,9 +134,6 @@ void kbase_pm_register_access_disable(struct kbase_device *kbdev)
 
 	if (callbacks)
 		callbacks->power_off_callback(kbdev);
-
-	if (callbacks->power_off_second_part_callback)
-		callbacks->power_off_second_part_callback(kbdev);
 }
 
 int kbase_hwaccess_pm_init(struct kbase_device *kbdev)
@@ -349,10 +344,11 @@ static void pm_handle_power_off(struct kbase_device *kbdev)
 		 * re-enabling of the interrupts would be done in this
 		 * case, as the clocks to GPU were not withdrawn yet).
 		 */
-		if (backend->poweron_required)
+		if (backend->poweron_required) {
 			kbase_pm_clock_on(kbdev, false);
-		else
+		} else{
 			WARN_ON(!kbase_pm_clock_off(kbdev));
+		}
 	}
 }
 
@@ -394,9 +390,6 @@ static void kbase_pm_gpu_poweroff_wait_wq(struct work_struct *data)
 	spin_unlock_irqrestore(&kbdev->hwaccess_lock, flags);
 
 	kbase_pm_unlock(kbdev);
-
-	if (backend->callback_power_off_second_part)
-		backend->callback_power_off_second_part(kbdev);
 
 	wake_up(&kbdev->pm.backend.poweroff_wait);
 }
