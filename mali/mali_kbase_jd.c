@@ -42,6 +42,7 @@
 #include <mali_kbase_caps.h>
 #include <mali_kbase_config_platform.h>
 
+#define DUMP_ATOM_INTERVAL 6000000000   // dump interval is 6s
 #define IS_TIMEOUT(a, b, c) ((b != 0) && (a - b > c))
 
 #ifdef SPRD_SUPPORT_FAULT_KEYWORD
@@ -91,7 +92,6 @@ static void jd_mark_atom_complete(struct kbase_jd_atom *katom)
 	dev_dbg(katom->kctx->kbdev->dev, "Atom %pK status to completed\n",
 		(void *)katom);
 	KBASE_TLSTREAM_TL_JD_ATOM_COMPLETE(katom->kctx->kbdev, katom);
-	kbase_dump_atoms_check(katom, TIMEOUT_3s);
 }
 
 /* Runs an atom, either by handing to the JS or by immediately running it in the case of soft-jobs
@@ -625,7 +625,6 @@ bool kbase_jd_done_nolock(struct kbase_jd_atom *katom, bool post_immediately)
 					kbase_finish_soft_job(node);
 				}
 				node->status = KBASE_JD_ATOM_STATE_COMPLETED;
-				kbase_dump_atoms_check(katom, TIMEOUT_3s);
 			}
 
 			if (node->status == KBASE_JD_ATOM_STATE_COMPLETED) {
@@ -1099,6 +1098,7 @@ int kbase_jd_submit(struct kbase_context *kctx,
 	bool need_to_try_schedule_context = false;
 	struct kbase_device *kbdev;
 	u32 latest_flush;
+	ktime_t current_time;
 
 	struct job_chain_record *jd_record = &(kctx->jd_submit_list[atomic_read(&kctx->jd_submit_num) % 50]);
 
@@ -1276,13 +1276,16 @@ while (false)
 	if (need_to_try_schedule_context)
 		kbase_js_sched_all(kbdev);
 
-	for (i = 0; i < BASE_JD_ATOM_COUNT; i++) {
-		struct kbase_jd_atom *datom = &jctx->atoms[i];
-		if (datom->kctx && datom->jb_proc_ts.time[JB_SUBMIT] != 0) {
-			if (kbase_dump_atoms_check(datom, TIMEOUT_4s))
-				goto l1;
+	current_time = ktime_get();
+	if (current_time - jctx->last_dump_timestamp >= DUMP_ATOM_INTERVAL) { //Too many dumps cause interrupt chaos
+		for (i = 0; i < BASE_JD_ATOM_COUNT; i++) {
+			struct kbase_jd_atom *datom = &jctx->atoms[i];
+			if (datom->kctx && datom->jb_proc_ts.time[JB_SUBMIT] != 0) {
+				if (kbase_dump_atoms_check(datom, TIMEOUT_4s))
+					goto l1;
+			}
 		}
-
+		jctx->last_dump_timestamp = current_time;
 	}
 
 l1:

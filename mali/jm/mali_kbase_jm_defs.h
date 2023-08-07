@@ -899,6 +899,8 @@ struct kbase_jd_context {
 	struct kbase_jd_renderpass renderpasses[BASE_JD_RP_COUNT];
 	struct workqueue_struct *job_done_wq;
 
+	ktime_t last_dump_timestamp;
+
 	wait_queue_head_t zero_jobs_wait;
 	wait_queue_head_t dumping_atoms_wait;
 	atomic_t is_dumping;
