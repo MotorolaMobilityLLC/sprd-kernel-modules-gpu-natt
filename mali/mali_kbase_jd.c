@@ -19,6 +19,8 @@
  *
  */
 
+//This file has been modified by Unisoc(Shanghai) Technologies Co.,Ltd in 2023.
+
 #include <linux/dma-buf.h>
 #if IS_ENABLED(CONFIG_COMPAT)
 #include <linux/compat.h>
@@ -1613,7 +1615,10 @@ void kbase_atom_dump_reset(struct kbase_jd_atom *katom)
 	katom->completion_code = 0;
 	katom->run_status = KRun_Invalid;
 	memset(&katom->jb_proc_ts, 0, sizeof(struct kbase_job_process_timestamp));
-	memset(&katom->jd_done_work, 0, sizeof(struct kbase_work_time_spent) * 4);
+	memset(&katom->jd_done_work, 0, sizeof(struct kbase_work_time_spent));
+	memset(&katom->dma_fence_work, 0, sizeof(struct kbase_work_time_spent));
+	memset(&katom->sync_wait_fence_work, 0, sizeof(struct kbase_work_time_spent));
+	memset(&katom->soft_event_complete_work, 0, sizeof(struct kbase_work_time_spent));
 }
 
 void kbase_jd_done_worker(struct work_struct *data)

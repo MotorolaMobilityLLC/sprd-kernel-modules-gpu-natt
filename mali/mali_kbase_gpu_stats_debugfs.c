@@ -13,7 +13,7 @@
  *
  */
 
-
+//This file has been modified by Unisoc(Shanghai) Technologies Co.,Ltd in 2023.
 
 #include <mali_kbase_gpu_stats_debugfs.h>
 #include <backend/gpu/mali_kbase_pm_internal.h>
@@ -87,7 +87,7 @@ static ssize_t kbasep_gpu_enable_stats_debugfs_write(struct file *file,
 {
 	struct seq_file *s = file->private_data;
 	struct kbase_device *kbdev = s->private;
-	char buf[MAX_ENABLE_STATS_LEN];
+	char buf[MAX_ENABLE_STATS_LEN] = {0};
 	u32 enable_freq_stats = 0;
 	int i = 0;
 	struct kbasep_pm_metrics diff;
