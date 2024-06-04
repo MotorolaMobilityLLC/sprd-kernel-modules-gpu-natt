@@ -399,7 +399,7 @@ static void kbase_pm_invoke(struct kbase_device *kbdev,
 	} else {
 		if(action == ACTION_PWRON){
 			kbase_reg_write(kbdev, GPU_CONTROL_REG(PWR_KEY), 0x2968a819);
-			kbase_reg_write(kbdev, GPU_CONTROL_REG(PWR_OVERRIDE1), 0xF01E0078);
+			kbase_reg_write(kbdev, GPU_CONTROL_REG(PWR_OVERRIDE1), 0x0FF02008);
 		}
 		if (lo != 0)
 			kbase_reg_write(kbdev, GPU_CONTROL_REG(reg), lo);
